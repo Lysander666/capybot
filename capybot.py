@@ -1,4 +1,3 @@
-Here is the complete, consolidated `capybot.py` script. It includes all **205 facts**, the logic to prevent duplicates, the minimalist ASCII capybara, and the brand-new **multi-receiver support** so you can sign up your brother, yourself, and anyone else who needs a daily dose of zen.
 
 ```python
 import smtplib
