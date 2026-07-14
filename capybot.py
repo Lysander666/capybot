@@ -289,36 +289,51 @@ def send_capybara_fact():
     msg['To'] = ", ".join(RECEIVER_EMAILS_LIST)
     msg['Subject'] = "Your Daily Capybara Fact has Arrived!"
     
-    # We use a raw string. Note that we fixed the double backslash at the top!
-    template = r"""
-    ===================================================
-                     CAPYBOT v2.0
-    ===================================================
-    
-           /|---|\
-          (  -_-  )   <-- "Greetings, humans."
-           )     (
-          (_.._.._)
-    
-    Here is your daily dose of absolute tranquility.
-    
-    DID YOU KNOW?
-    👉 {fact} 👈
-    
-    ---------------------------------------------------
-    This email was dispatched with 100% organic zen.
-    Have a relaxed day,
-    Capybot 🤖
-    ===================================================
+    # We define the ASCII art separately so we can keep it perfectly locked
+    ascii_art = """====================================
+            CAPYBOT v2.0
+====================================
+
+          /|---|\\
+         (  -_-  )
+          )     (  
+         (_.._.._)
+
+     <-- "Greetings, humans." -->"""
+
+    # We build a clean HTML template. 
+    # - The ASCII art gets a locked 'white-space: pre' tag so it never squishes.
+    # - The text gets standard spacing so it wraps beautifully on any phone.
+    html_body = f"""
+    <html>
+    <body style="margin: 0; padding: 10px; background-color: #ffffff;">
+        <div style="font-family: 'Courier New', Courier, monospace; font-size: 14px; max-width: 360px; margin: 0 auto; color: #333333; line-height: 1.4;">
+            
+            <pre style="font-family: 'Courier New', Courier, monospace; font-size: 14px; margin: 0; line-height: 1.2; white-space: pre; overflow-x: auto;">{ascii_art}</pre>
+            
+            <p style="margin: 20px 0 15px 0;">Here is your daily dose of absolute tranquility.</p>
+            
+            <p style="margin: 15px 0;">
+                <strong>DID YOU KNOW?</strong><br>
+                👉 {fact} 👈
+            </p>
+            
+            <p style="margin: 15px 0; color: #666666;">------------------------------------</p>
+            
+            <p style="margin: 15px 0;">
+                This email was dispatched with 100% organic zen.<br>
+                Have a relaxed day,<br>
+                <strong>Capybot 🤖</strong>
+            </p>
+            
+            <p style="margin: 15px 0; color: #333333;">====================================</p>
+            
+        </div>
+    </body>
+    </html>
     """
     
-    # 1. Replace the placeholder with the actual fact
-    plain_text_body = template.replace("{fact}", fact)
-    
-    # 2. Wrap the text in HTML preformatted tags to force monospacing
-    html_body = f"<html><body><pre style='font-family: monospace; font-size: 14px;'>{plain_text_body}</pre></body></html>"
-    
-    # 3. Attach as HTML instead of plain text
+    # Attach as HTML
     msg.attach(MIMEText(html_body, 'html'))
     
     try:
@@ -327,7 +342,7 @@ def send_capybara_fact():
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, RECEIVER_EMAILS_LIST, msg.as_string())
         server.quit()
-        print("Success: Fully proportioned, un-squished Capybara delivered.")
+        print("Success: Mobile-optimized Capybara deployed!")
     except Exception as e:
         print(f"Error: Mission failed. {e}")
 
