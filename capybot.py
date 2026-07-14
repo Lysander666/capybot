@@ -1,5 +1,3 @@
-
-```python
 import smtplib
 import random
 import json
@@ -332,4 +330,3 @@ def send_capybara_fact():
 if __name__ == "__main__":
     send_capybara_fact()
 
-```
