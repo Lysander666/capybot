@@ -289,14 +289,14 @@ def send_capybara_fact():
     msg['To'] = ", ".join(RECEIVER_EMAILS_LIST)
     msg['Subject'] = "Your Daily Capybara Fact has Arrived!"
     
-    # Upgraded, incredibly official email layout featuring Zen ASCII Art
-    body = f"""
+# Using a raw string (r""") prevents Python from mangling the backslashes!
+    body = r"""
     ===================================================
-                     CAPYBOT v1.0
+                     CAPYBOT v1.1
     ===================================================
     
-           /|---|\
-          (  -_-  )   <-- "Greetings, human."
+           /|---|\\
+          (  -_-  )   <-- "Greetings, humans."
            )     (
           (_.._.._)
     
