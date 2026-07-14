@@ -279,7 +279,7 @@ def get_next_fact():
 # =====================================================================
 def send_capybara_fact():
     if not RECEIVER_EMAILS_LIST:
-        print("Error: No receiver emails configured. Please set the RECEIVER_EMAIL environment variable.")
+        print("Error: No receiver emails configured.")
         return
 
     fact = get_next_fact()
@@ -289,13 +289,13 @@ def send_capybara_fact():
     msg['To'] = ", ".join(RECEIVER_EMAILS_LIST)
     msg['Subject'] = "Your Daily Capybara Fact has Arrived!"
     
-# 1. This is your template (keep using r""" so the ASCII head stays on!)
+    # We use a raw string. Note that we fixed the double backslash at the top!
     template = r"""
     ===================================================
-                     CAPYBOT v1.2
+                     CAPYBOT v2.0
     ===================================================
     
-           /|---|\\
+           /|---|\
           (  -_-  )   <-- "Greetings, humans."
            )     (
           (_.._.._)
@@ -312,23 +312,22 @@ def send_capybara_fact():
     ===================================================
     """
     
-    # 2. THIS IS THE magic line we need to add/fix!
-    # It manually replaces "{fact}" in your template with the real fact.
-    body = template.replace("{fact}", fact)
+    # 1. Replace the placeholder with the actual fact
+    plain_text_body = template.replace("{fact}", fact)
     
-    msg.attach(MIMEText(body, 'plain'))
+    # 2. Wrap the text in HTML preformatted tags to force monospacing
+    html_body = f"<html><body><pre style='font-family: monospace; font-size: 14px;'>{plain_text_body}</pre></body></html>"
+    
+    # 3. Attach as HTML instead of plain text
+    msg.attach(MIMEText(html_body, 'html'))
     
     try:
-        # Establish connection to Gmail's SMTP server
         server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()  # Upgrade connection to secure TLS
+        server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        
-        # NOTE: sendmail requires a Python LIST of emails to deliver to
         server.sendmail(SENDER_EMAIL, RECEIVER_EMAILS_LIST, msg.as_string())
-        
         server.quit()
-        print(f"Success: Capybara data successfully delivered to {len(RECEIVER_EMAILS_LIST)} fans.")
+        print("Success: Fully proportioned, un-squished Capybara delivered.")
     except Exception as e:
         print(f"Error: Mission failed. {e}")
 
