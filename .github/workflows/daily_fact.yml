@@ -1,3 +1,26 @@
+name: Run Capybot Daily
+
 on:
   schedule:
-    - cron: '30 15 * * *'  # 15:30 UTC / 16:30 BST
+    # Run every day at 15:30 UTC (16:30 BST)
+    - cron: '30 15 * * *'
+  workflow_dispatch: # Allows you to also trigger it manually with a button
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' # <-- FIXED THIS LINE!
+
+    - name: Run Capybot Script
+      env:
+        SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+        SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+        RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+      run: python capybot.py
