@@ -289,10 +289,10 @@ def send_capybara_fact():
     msg['To'] = ", ".join(RECEIVER_EMAILS_LIST)
     msg['Subject'] = "Your Daily Capybara Fact has Arrived!"
     
-# Using a raw string (r""") prevents Python from mangling the backslashes!
-    body = r"""
+# 1. This is your template (keep using r""" so the ASCII head stays on!)
+    template = r"""
     ===================================================
-                     CAPYBOT v1.1
+                     CAPYBOT v1.2
     ===================================================
     
            /|---|\\
@@ -311,6 +311,11 @@ def send_capybara_fact():
     Capybot 🤖
     ===================================================
     """
+    
+    # 2. THIS IS THE magic line we need to add/fix!
+    # It manually replaces "{fact}" in your template with the real fact.
+    body = template.replace("{fact}", fact)
+    
     msg.attach(MIMEText(body, 'plain'))
     
     try:
